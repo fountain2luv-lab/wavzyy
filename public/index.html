@@ -222,4 +222,5 @@
           dlVal.textContent = ((dlBytes * 8) / (sec * 1_000_000)).toFixed(1);
         }
         const dlSec = Math.max((performance.now() - dlStart) / 1000, 0.05);
+
         const downloadMbps = (dlBytes * 8) / (dlSec * 1_0
