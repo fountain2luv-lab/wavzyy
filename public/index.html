@@ -172,12 +172,6 @@
     const metaInfo = document.getElementById("metaInfo");
 
     async function runTest() {
-      if (navigator.onLine === false) {
-        statusText.textContent = "Your device reports no internet connection.";
-        statusText.className = "error";
-        return;
-      }
-
       goBtn.disabled = true;
       goBtn.textContent = "...";
       statusText.className = "";
@@ -228,50 +222,4 @@
           dlVal.textContent = ((dlBytes * 8) / (sec * 1_000_000)).toFixed(1);
         }
         const dlSec = Math.max((performance.now() - dlStart) / 1000, 0.05);
-        const downloadMbps = (dlBytes * 8) / (dlSec * 1_000_000);
-        dlVal.textContent = downloadMbps.toFixed(1);
-
-        statusText.textContent = "Testing upload speed...";
-        const payload = new Uint8Array(5 * 1024 * 1024);
-        const ulStart = performance.now();
-        const ulRes = await fetch(`/api/upload?r=${Date.now()}`, {
-          method: "POST",
-          body: payload,
-          cache: "no-store",
-        });
-        if (!ulRes.ok) throw new Error(`Upload failed (HTTP ${ulRes.status})`);
-        await ulRes.json();
-        const ulSec = Math.max((performance.now() - ulStart) / 1000, 0.05);
-        const uploadMbps = (payload.byteLength * 8) / (ulSec * 1_000_000);
-        ulVal.textContent = uploadMbps.toFixed(1);
-
-        statusText.textContent = "Running AI Connection Doctor...";
-        const diagRes = await fetch("/api/diagnose", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ downloadMbps, uploadMbps, pingMs, jitterMs, packetLossPct: 0 }),
-        });
-
-        if (diagRes.ok) {
-          const diag = await diagRes.json();
-          aiGrade.textContent = `AI Connection Doctor — ${diag.grade}`;
-          aiSummary.textContent = diag.aiSummary || diag.summary;
-          aiTips.innerHTML = (diag.tips || []).map((t) => `<li>${t}</li>`).join("");
-          aiCard.classList.add("visible");
-        }
-
-        statusText.textContent = "Test complete";
-      } catch (err) {
-        statusText.textContent = err.message || "Speed test failed";
-        statusText.className = "error";
-      } finally {
-        goBtn.disabled = false;
-        goBtn.textContent = "GO";
-      }
-    }
-
-    goBtn.addEventListener("click", runTest);
-  </script>
-</body>
-  </html>
-  
+        const downloadMbps = (dlBytes * 8) / (dlSec * 1_0
